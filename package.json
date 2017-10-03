@@ -1,0 +1,23 @@
+{
+  "name": "automagician",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "watchify -d index.js -o index.browser.js",
+    "build": "browserify index.js > index.browser.js",
+    "start": "npm run-script build && node server"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "browserify": "^14.4.0",
+    "watchify": "^3.9.0"
+  },
+  "dependencies": {
+    "automagic-ui": "^1.2.0",
+    "crel": "^3.1.0",
+    "righto": "^3.1.0"
+  },
+  "description": ""
+}
