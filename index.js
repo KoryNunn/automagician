@@ -75,7 +75,30 @@ var operations = {
 	},
 	scrollTo: function(selector, args, callback){
 		driver.scrollTo(selector).go(callback);
-	}
+	},
+    waitFor: function(selector, args, callback){
+        var startTime = Date.now();
+        var timeout = args[0] || 5000;
+        var found = righto(function(done){
+            function retry(){
+                if(Date.now() - startTime > timeout){
+                    return done(new Error('Timeout finding ' + selector));
+                }
+
+                driver.findUi(selector).go(function(error){
+                    if(error){
+                        return retry();
+                    }
+
+                    callback();
+                });
+            }
+
+            retry();
+        });
+
+        found(callback);
+    }
 };
 
 codeArea.addEventListener('keyup', function(){
@@ -83,6 +106,7 @@ codeArea.addEventListener('keyup', function(){
 });
 
 function run(){
+	hideShow(false);
 	var commands = codeArea.innerText.split('\n').filter(x => x.trim());
 
 	var complete = righto.reduce(commands.map(function(command){
@@ -105,14 +129,24 @@ function run(){
 		return righto(operations[operation], selector, args);
 	}));
 
-	complete(console.log.bind(null, 'Result:'));
+	complete(function(error){
+		hideShow(true);
+
+		if(error){
+			return console.log('Failed:', error);
+		}
+
+		console.log('Success');
+	});
 }
 
 runButton.addEventListener('click', run);
 
-function hideShow(){
+function hideShow(show){
 	shown = !shown;
-	var state = shown;
+	if(typeof show === 'boolean'){
+		shown = show;
+	}
 	hideShowButton.textContent = shown ? '_' : '\uD83D\uDDD6';
 	ui.classList.remove(shown ? 'hide' : 'show');
 	ui.classList.add(shown ? 'show' : 'hide');
