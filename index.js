@@ -7,6 +7,12 @@ uiDriver.init({
 var driver = uiDriver();
 
 var automagicStyles = `
+	@media print {
+		.automagic{
+			display: none;
+		}
+	}
+
 	.automagic{	
 		position: fixed;
 		top: 0;
@@ -22,13 +28,28 @@ var automagicStyles = `
 		padding: 2px;
 	}
 
-	.automagic.hide > *:not(.hideShow){
+	.automagic.hide .input{
 		display:none;
 	}
 
-	.automagic code{
+	.automagic.running .input{
+		display:none;
+	}
+
+	.automagic textarea{
 		display: block;
 		padding: 5px;
+		width: 100%;
+		height: 200px;
+	}
+
+	.automagic .output{
+		color: white;
+		padding: 1em;
+	}
+
+	.automagic .output.error{
+		color: red;
 	}
 `
 
@@ -38,8 +59,9 @@ var codeArea, runButton, hideShowButton;
 var ui = crel('div', { class: 'automagic' },
 	crel('style', automagicStyles),
 	hideShowButton = crel('button', { class: 'hideShow' }, '_'),
-	crel('pre',
-		codeArea = crel('code', {'contenteditable': true}, storage),
+	output = crel('span', { class: 'output' }),
+	crel('pre', { class: 'input' },
+		codeArea = crel('textarea', storage),
 		runButton = crel('button', 'run')
 	)
 );
@@ -102,12 +124,14 @@ var operations = {
 };
 
 codeArea.addEventListener('keyup', function(){
-	localStorage.setItem('automagic', codeArea.innerText);
+	localStorage.setItem('automagic', codeArea.value);
 });
 
 function run(){
 	hideShow(false);
-	var commands = codeArea.innerText.split('\n').filter(x => x.trim());
+	ui.classList.add('running');
+	output.classList.remove('error');
+	var commands = codeArea.value.split('\n').filter(x => x.trim());
 
 	var complete = righto.reduce(commands.map(function(command){
 		if(command.match(/^\/\//)){
@@ -130,13 +154,15 @@ function run(){
 	}));
 
 	complete(function(error){
-		hideShow(true);
+		ui.classList.remove('running');
 
 		if(error){
-			return console.log('Failed:', error);
+			output.classList.add('error');
+			output.textContent = error;
+			return;
 		}
 
-		console.log('Success');
+		output.textContent = 'Success';
 	});
 }
 
