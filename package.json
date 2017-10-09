@@ -6,7 +6,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "watchify -d index.js -o index.browser.js",
     "build": "browserify index.js > index.browser.js",
-    "start": "npm run-script build && node server"
+    "postinstall": "npm run-script build",
+    "start": "node server"
   },
   "author": "",
   "license": "ISC",

@@ -6,8 +6,9 @@ Very new, thrown together to solve a problem, subject to major change.
 
 ## Usage
 
-1. build, then run the server:
+1. Install, build, then run the server:
 ```
+npm install
 npm start
 ```
 
