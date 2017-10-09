@@ -85,8 +85,7 @@ var operations = {
 	},
 	enter: function(selector, args, callback){
 		driver
-		.focus(selector)
-		.changeValue(args[0])
+		.changeValue(selector, null, args[0])
 		.go(callback);
 	},
 	enterSelector: function(selector, args, callback){
