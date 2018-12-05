@@ -14,7 +14,7 @@ npm start
 
 1. Add the bookmarklet to your browser:
 ```javascript
-javascript: var x = document.createElement('script'); x.src = 'http://localhost:8080/index.browser.js?a='+Math.random(); document.body.appendChild(x);
+javascript: var x = document.createElement('script'); x.src = 'https://automagician.now.sh/index.browser.js?a='+Math.random(); document.body.appendChild(x);
 ```
 
 1. Click your bookmarklet
